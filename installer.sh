@@ -6,8 +6,13 @@ if [ "$EUID" -ne 0 ]
 fi
 
 OSTYPE=$(uname -m)
-USER="prometheus-node-exporter"
-NAME="prometheus_node_exporter"
+USER="prometheus"
+
+PROMETHEUS="prometheus"
+
+NODE_EXPORTER="prometheus_node_exporter"
+
+NAME="prometheus"
 
 if [ "${OSTYPE}" = "x86_64" ]; then
     BIN="amd64"
@@ -15,17 +20,77 @@ else
     BIN="arm64"
 fi
 
-LATEST=$(curl -s https://api.github.com/repos/prometheus/node_exporter/releases/latest | grep "linux-${BIN}.tar.gz" | cut -d '"' -f 4 | tail -1)
+mkdir /opt/$NAME
 
 cd /tmp/
-curl -s -LJO $LATEST
 
-tar -zxf $NAME-*.tar.gz
+LATEST_PROMETHEUS=$(curl -s https://api.github.com/repos/prometheus/prometheus/releases/latest | grep "linux-${BIN}.tar.gz" | cut -d '"' -f 4 | tail -1)
 
-mkdir /opt/$NAME
-mv /tmp/$NAME-*/node_exporter /opt/$NAME/bin
+curl -s -LJO $LATEST_PROMETHEUS
 
-cat << EOF > /etc/systemd/system/prometheus_node_exporter.service
+tar -zxf $PROMETHEUS-*.tar.gz
+
+mv /tmp/$PROMETHEUS-*/prometheus /opt/$NAME/bin
+mv /tmp/$PROMETHEUS-*/promtool /opt/$NAME/bin
+mv /tmp/$PROMETHEUS-*/consoles /etc/prometheus
+mv /tmp/$PROMETHEUS-*/console_libraries /etc/prometheus
+# mv prometheus.yml /etc/prometheus
+
+mkdir /etc/prometheus
+mkdir /var/lib/prometheus
+
+
+
+
+LATEST_NODE_EXPORTER=$(curl -s https://api.github.com/repos/prometheus/node_exporter/releases/latest | grep "linux-${BIN}.tar.gz" | cut -d '"' -f 4 | tail -1)
+
+
+curl -s -LJO $LATEST_NODE_EXPORTER
+
+tar -zxf $NODE_EXPORTER-*.tar.gz
+
+
+mv /tmp/$NODE_EXPORTER-*/node_exporter /opt/$NAME/bin
+
+cat << EOF > /etc/systemd/system/$PROMETHEUS.service
+[Unit]
+Description=Prometheus
+Documentation=https://github.com/prometheus/prometheus
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=$USER
+Group=$USER
+Type=simple
+ExecStart=/opt/$NAME/bin/prometheus \
+    --config.file /etc/prometheus/prometheus.yml \
+    --storage.tsdb.path /var/lib/prometheus/ \
+    --web.console.templates=/etc/prometheus/consoles \
+    --web.console.libraries=/etc/prometheus/console_libraries
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat << EOF > /etc/prometheus/prometheus.yml
+global:
+  scrape_interval: 60s
+
+scrape_configs:
+  - job_name: node
+    static_configs:
+      - targets: ['localhost:9100']
+
+remote_write:
+  - url: $GRAFANA_URL 
+    basic_auth:
+      username: $GRAFANA_USERNAME
+      password: $GRAFANA_PASSWORD
+EOF
+
+
+cat << EOF > /etc/systemd/system/$NODE_EXPORTER.service
 [Unit]
 Description=Prometheus exporter for machine metrics
 Documentation=https://github.com/prometheus/node_exporter
@@ -34,7 +99,7 @@ Documentation=https://github.com/prometheus/node_exporter
 Restart=always
 User=$USER
 Group=$USER
-EnvironmentFile=/opt/$NAME/env
+EnvironmentFile=/opt/$NAME/node_exporter_env
 ExecStart=/opt/$NAME/bin \$ARGS
 ExecReload=/bin/kill -HUP $MAINPID
 TimeoutStopSec=20s
@@ -44,7 +109,7 @@ SendSIGKILL=no
 WantedBy=multi-user.target
 EOF
 
-cat << EOF > /opt/$NAME/env
+cat << EOF > /opt/$NAME/node_exporter_env
 # Set the command-line arguments to pass to the server.
 # Due to shell scaping, to pass backslashes for regexes, you need to double
 # them (\\d for \d). If running under systemd, you need to double them again
@@ -178,8 +243,20 @@ EOF
 adduser -r -d /opt/$NAME $USER -s /sbin/nologin
 chown -R $USER:$USER /opt/$NAME
 
-systemctl enable $NAME
-systemctl start $NAME
-systemctl status $NAME
-rm -rf /tmp/$NAME-*
+chown $USER:$USER /etc/prometheus
+chown -R $USER:$USER /etc/prometheus/consoles
+chown -R $USER:$USER /etc/prometheus/console_libraries
+chown -R $USER:$USER /var/lib/prometheus
+
+systemctl enable $NODE_EXPORTER
+systemctl start $NODE_EXPORTER
+systemctl status $NODE_EXPORTER
+
+systemctl enable $PROMETHEUS
+systemctl start $PROMETHEUS
+systemctl status $PROMETHEUS
+
+rm -rf /tmp/$PROMETHEUS-*
+
+rm -rf /tmp/$NODE_EXPORTER-*
 
