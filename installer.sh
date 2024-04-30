@@ -6,8 +6,8 @@ if [ "$EUID" -ne 0 ]
 fi
 
 OSTYPE=$(uname -m)
-USER="node-exporter"
-NAME="node_exporter"
+USER="prometheus-node-exporter"
+NAME="prometheus_node_exporter"
 
 if [ "${OSTYPE}" = "x86_64" ]; then
     BIN="amd64"
@@ -25,10 +25,10 @@ tar -zxf $NAME-*.tar.gz
 mkdir /opt/$NAME
 mv /tmp/$NAME-*/node_exporter /opt/$NAME/bin
 
-cat << EOF > /etc/systemd/system/node_exporter.service
+cat << EOF > /etc/systemd/system/prometheus_node_exporter.service
 [Unit]
 Description=Prometheus exporter for machine metrics
-Documentation=https://github.com/flightlesstux/node_exporter
+Documentation=https://github.com/ukor/prometheus_node_exporter
 
 [Service]
 Restart=always
