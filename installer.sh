@@ -1,7 +1,6 @@
 #!/bin/bash
 
-if [ "$EUID" -ne 0 ]
-then 
+if [ $(id -u) -ne 0 ]; then
   echo "Sorry! Please run as root..."
   exit 1
 fi
