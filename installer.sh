@@ -1,11 +1,19 @@
 #!/bin/bash
 
 if [ "$EUID" -ne 0 ]
-  then echo "Sorry! Please run as root..."
-  exit
+then 
+  echo "Sorry! Please run as root..."
+  exit 1
 fi
 
 OSTYPE=$(uname -m)
+
+if [ "${OSTYPE}" = "x86_64" ]; then
+    BIN="amd64"
+else
+    BIN="arm64"
+fi
+
 USER="prometheus"
 
 PROMETHEUS="prometheus"
@@ -13,12 +21,6 @@ PROMETHEUS="prometheus"
 NODE_EXPORTER="prometheus_node_exporter"
 
 NAME="prometheus"
-
-if [ "${OSTYPE}" = "x86_64" ]; then
-    BIN="amd64"
-else
-    BIN="arm64"
-fi
 
 mkdir /opt/$NAME
 
@@ -41,14 +43,11 @@ mkdir /var/lib/prometheus
 
 
 
-
 LATEST_NODE_EXPORTER=$(curl -s https://api.github.com/repos/prometheus/node_exporter/releases/latest | grep "linux-${BIN}.tar.gz" | cut -d '"' -f 4 | tail -1)
-
 
 curl -s -LJO $LATEST_NODE_EXPORTER
 
 tar -zxf $NODE_EXPORTER-*.tar.gz
-
 
 mv /tmp/$NODE_EXPORTER-*/node_exporter /opt/$NAME/bin
 
