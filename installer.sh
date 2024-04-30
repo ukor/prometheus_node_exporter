@@ -28,7 +28,7 @@ mv /tmp/$NAME-*/node_exporter /opt/$NAME/bin
 cat << EOF > /etc/systemd/system/prometheus_node_exporter.service
 [Unit]
 Description=Prometheus exporter for machine metrics
-Documentation=https://github.com/ukor/prometheus_node_exporter
+Documentation=https://github.com/prometheus/node_exporter
 
 [Service]
 Restart=always
