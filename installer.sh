@@ -1,5 +1,7 @@
 #!/bin/bash
 
+LABEL=$(hostname)-$(hostnamectl | grep "Chassis" | tail -c 3)-$(hostnamectl | grep Machine ID | tail -c 5)
+
 if [ $(id -u) -ne 0 ]; then
   echo "Run as root or with sudo"
   exit 1
@@ -78,6 +80,8 @@ EOF
 cat << EOF > /etc/prometheus/prometheus.yml
 global:
   scrape_interval: 60s
+  external_labels:
+    origin_prometheus: $LABEL 
 
 scrape_configs:
   - job_name: node
