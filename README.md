@@ -31,3 +31,5 @@ sh <(curl https://raw.githubusercontent.com/ukor/prometheus_node_exporter/master
 
 - Install Prometheus -
   https://www.cherryservers.com/blog/install-prometheus-ubuntu
+
+- Grafana Agent with ansible - https://grafana.com/docs/grafana-cloud/developer-resources/infrastructure-as-code/ansible/ansible-grafana-agent-linux/

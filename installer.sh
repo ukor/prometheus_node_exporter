@@ -102,7 +102,7 @@ Restart=always
 User=$USER
 Group=$USER
 EnvironmentFile=/opt/$NAME/node_exporter_env
-ExecStart=/opt/$NAME/bin \$ARGS
+ExecStart=/opt/$NAME/bin/node_exporter \$ARGS
 ExecReload=/bin/kill -HUP $MAINPID
 TimeoutStopSec=20s
 SendSIGKILL=no
@@ -264,6 +264,8 @@ systemctl status $PROMETHEUS
 rm -rf /tmp/$PROMETHEUS-*
 
 rm -rf /tmp/$NODE_EXPORTER-*
+
+rm /tmp/.grafana.config
 
 systemctl daemon-reload
 
