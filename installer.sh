@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $(id -u) -ne 0 ]; then
-  echo "Sorry! Please run as root..."
+  echo "Run as root or with sudo"
   exit 1
 fi
 
