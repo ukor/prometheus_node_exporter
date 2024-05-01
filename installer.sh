@@ -72,7 +72,7 @@ EOF
 
 # TODO - check that the config file exist
 #
-. $HOME/grafana.confg
+. /tmp/.grafana.confg
 
 
 cat << EOF > /etc/prometheus/prometheus.yml
@@ -265,5 +265,5 @@ rm -rf /tmp/$PROMETHEUS-*
 
 rm -rf /tmp/$NODE_EXPORTER-*
 
-systemctl daemon-relaod
+systemctl daemon-reload
 
