@@ -8,6 +8,7 @@ Installs Prometheus and node_exporter latest version on arm64 and x86_64
 
 - sudo privileges
 - Environmental varaibles
+
 ```
 GRAFANA_URL
 
@@ -24,6 +25,14 @@ Run the command with under `sudo` privilege in your linux server.
 sh <(curl https://raw.githubusercontent.com/ukor/prometheus_node_exporter/master/installer.sh)
 ```
 
+## Uninstall
+
+To undo all the changes that was made by the installer, run this command
+
+```bash
+sh <(curl https://raw.githubusercontent.com/ukor/prometheus_node_exporter/master/uninstall.sh)
+```
+
 ### Resources
 
 - Monitoring a Linux host using Prometheus and node_exporter -
@@ -32,4 +41,5 @@ sh <(curl https://raw.githubusercontent.com/ukor/prometheus_node_exporter/master
 - Install Prometheus -
   https://www.cherryservers.com/blog/install-prometheus-ubuntu
 
-- Grafana Agent with ansible - https://grafana.com/docs/grafana-cloud/developer-resources/infrastructure-as-code/ansible/ansible-grafana-agent-linux/
+- Grafana Agent with ansible -
+  https://grafana.com/docs/grafana-cloud/developer-resources/infrastructure-as-code/ansible/ansible-grafana-agent-linux/
