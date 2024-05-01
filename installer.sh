@@ -237,7 +237,7 @@ ARGS=""
 #                            "logger:stdout?json=true"
 EOF
 
-adduser -r -d /opt/$NAME $USER -s /sbin/nologin
+adduser --system --home /opt/$NAME $USER --shell /sbin/nologin
 chown -R $USER:$USER /opt/$NAME
 
 chown $USER:$USER /etc/prometheus
