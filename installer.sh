@@ -72,7 +72,7 @@ EOF
 
 # TODO - check that the config file exist
 #
-. ~/grafana.confg
+. $HOME/grafana.confg
 
 
 cat << EOF > /etc/prometheus/prometheus.yml
@@ -242,10 +242,13 @@ ARGS=""
 #                            "logger:stdout?json=true"
 EOF
 
-adduser --system --home /opt/$NAME $USER --shell /sbin/nologin --user-group
+
+addgroup $USER
+adduser --system --home /opt/$NAME $USER --shell /sbin/nologin --gid $USER
+
 chown --recursive $USER:$USER /opt/$NAME
 
-chown $USER:$USER /etc/prometheus
+chown --recursive $USER:$USER /etc/prometheus
 chown --recursive $USER:$USER /etc/prometheus/consoles
 chown --recursive $USER:$USER /etc/prometheus/console_libraries
 chown --recursive $USER:$USER /var/lib/prometheus
