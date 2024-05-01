@@ -33,5 +33,6 @@ rm /etc/systemd/system/$PROMETHEUS.service
 
 systemctl daemon-relaod
 
+groupdel $USER
 userdel --remove $USER
 
