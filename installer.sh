@@ -237,13 +237,13 @@ ARGS=""
 #                            "logger:stdout?json=true"
 EOF
 
-adduser --system --home /opt/$NAME $USER --shell /sbin/nologin
-chown -R $USER:$USER /opt/$NAME
+adduser --system --home /opt/$NAME $USER --shell /sbin/nologin --user-group
+chown --recursive $USER:$USER /opt/$NAME
 
 chown $USER:$USER /etc/prometheus
-chown -R $USER:$USER /etc/prometheus/consoles
-chown -R $USER:$USER /etc/prometheus/console_libraries
-chown -R $USER:$USER /var/lib/prometheus
+chown --recursive $USER:$USER /etc/prometheus/consoles
+chown --recursive $USER:$USER /etc/prometheus/console_libraries
+chown --recursive $USER:$USER /var/lib/prometheus
 
 systemctl enable $NODE_EXPORTER
 systemctl start $NODE_EXPORTER
