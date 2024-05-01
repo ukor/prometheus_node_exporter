@@ -244,7 +244,7 @@ EOF
 
 
 addgroup $USER
-adduser --system --home /opt/$NAME $USER --shell /sbin/nologin --group $USER
+adduser --system --home /opt/$NAME $USER --shell /sbin/nologin --ingroup $USER
 
 chown --recursive $USER:$USER /opt/$NAME
 
