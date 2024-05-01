@@ -17,11 +17,14 @@ USER="prometheus"
 
 PROMETHEUS="prometheus"
 
-NODE_EXPORTER="prometheus_node_exporter"
+NODE_EXPORTER="node_exporter"
 
 NAME="prometheus"
 
 mkdir /opt/$NAME
+mkdir /opt/$NAME/bin
+mkdir /etc/prometheus
+mkdir /var/lib/prometheus
 
 cd /tmp/
 
@@ -36,10 +39,6 @@ mv /tmp/$PROMETHEUS-*/promtool /opt/$NAME/bin
 mv /tmp/$PROMETHEUS-*/consoles /etc/prometheus
 mv /tmp/$PROMETHEUS-*/console_libraries /etc/prometheus
 # mv prometheus.yml /etc/prometheus
-
-mkdir /etc/prometheus
-mkdir /var/lib/prometheus
-
 
 
 LATEST_NODE_EXPORTER=$(curl -s https://api.github.com/repos/prometheus/node_exporter/releases/latest | grep "linux-${BIN}.tar.gz" | cut -d '"' -f 4 | tail -1)
