@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LABEL=$(hostname)-$(hostnamectl | grep "Chassis" | tail -c 3)-$(hostnamectl | grep Machine ID | tail -c 5)
+LABEL=$(hostname)-$(hostnamectl | grep "Chassis" | tail -c 3)-$(hostnamectl | grep "Machine ID" | tail -c 5)
 
 if [ $(id -u) -ne 0 ]; then
   echo "Run as root or with sudo"
