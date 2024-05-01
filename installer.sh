@@ -70,6 +70,11 @@ ExecStart=/opt/$NAME/bin/prometheus \
 WantedBy=multi-user.target
 EOF
 
+# TODO - check that the config file exist
+#
+. ~/grafana.confg
+
+
 cat << EOF > /etc/prometheus/prometheus.yml
 global:
   scrape_interval: 60s
@@ -256,4 +261,6 @@ systemctl status $PROMETHEUS
 rm -rf /tmp/$PROMETHEUS-*
 
 rm -rf /tmp/$NODE_EXPORTER-*
+
+systemctl daemon-relaod
 

@@ -31,6 +31,7 @@ systemctl stop $PROMETHEUS
 systemctl disable $PROMETHEUS
 rm /etc/systemd/system/$PROMETHEUS.service
 
+systemctl daemon-relaod
 
 userdel --remove $USER
 
